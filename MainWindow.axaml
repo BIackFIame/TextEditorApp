@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="TextEditorAp.MainWindow"
+        Title="Text Editor">
+    <StackPanel>
+        <Button x:Name="NewButton" Content="New" Click="NewButton_Click"/>
+        <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
+        <Button x:Name="LoadButton" Content="Load" Click="LoadButton_Click"/>
+        <TabControl x:Name="DocumentsTab"/>
+    </StackPanel>
+</Window>
