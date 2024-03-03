@@ -129,3 +129,4 @@
 /Users/alexbaiko/TextEditorAp/obj/Debug/net8.0/TextEdit.5E11BA56.Up2Date
 /Users/alexbaiko/TextEditorAp/obj/Debug/net8.0/TextEditorAp.genruntimeconfig.cache
 /Users/alexbaiko/TextEditorAp/obj/Debug/net8.0/ref/TextEditorAp.dll
+/Users/alexbaiko/TextEditorAp/obj/Debug/net8.0/TextEditorAp.sourcelink.json

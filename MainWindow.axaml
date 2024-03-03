@@ -2,10 +2,38 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="TextEditorAp.MainWindow"
         Title="Text Editor">
+    <Window.Styles>
+        <Style Selector="TabItem">
+            <Setter Property="MinWidth" Value="30" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel>
+                        <!-- Кнопка для закрытия вкладки -->
+                        <Button DockPanel.Dock="Right"
+                            Background="Red"
+                            Foreground="White"
+                            Content="X"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Width="20" Height="20"
+                            Margin="0,0,5,0"
+                            Click="CloseTab_Click"/>
+                        <!-- Привязка к Header для отображения заголовка -->
+                        <TextBlock Text="{TemplateBinding HeaderedContentControl.Header}"
+                            VerticalAlignment="Center"
+                            Margin="5,0"/>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </Window.Styles>
+
     <StackPanel>
+        <!-- Кнопки для управления документами -->
         <Button x:Name="NewButton" Content="New" Click="NewButton_Click"/>
         <Button x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
         <Button x:Name="LoadButton" Content="Load" Click="LoadButton_Click"/>
+        <!-- Контейнер для вкладок -->
         <TabControl x:Name="DocumentsTab"/>
     </StackPanel>
 </Window>

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TextEditorAp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b141beec62a50fa63495995a6211bca269a9e08f")]
 [assembly: System.Reflection.AssemblyProductAttribute("TextEditorAp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TextEditorAp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

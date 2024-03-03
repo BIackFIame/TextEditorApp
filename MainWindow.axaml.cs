@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using System.Collections;
+using Avalonia.LogicalTree;
 
 namespace TextEditorAp
 {
@@ -86,5 +88,26 @@ namespace TextEditorAp
             tabControl.Items.Add(tabItem);
             tabControl.SelectedItem = tabItem;
         }
+
+private void CloseTab_Click(object sender, RoutedEventArgs e)
+{
+    // sender это кнопка закрытия вкладки
+    if (sender is Button button)
+    {
+        // Пытаемся найти TabItem, которому принадлежит кнопка
+        var tabItem = button.GetLogicalParent() as TabItem;
+        if (tabItem != null)
+        {
+            // Получаем доступ к TabControl
+            var tabControl = this.FindControl<TabControl>("DocumentsTab");
+            if (tabControl != null && tabControl.Items is IList items)
+            {
+                items.Remove(tabItem);
+            }
+        }
+    }
+}
+
+
     }
 }
