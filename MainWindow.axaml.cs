@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.IO;
-using System;
-using System.Linq;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Avalonia.LogicalTree;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 
 namespace TextEditorAp
 {
@@ -30,23 +29,20 @@ namespace TextEditorAp
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             var tabControl = this.FindControl<TabControl>("DocumentsTab");
-            if (tabControl.SelectedItem is TabItem selectedTab && selectedTab.Content is TextBox textBox)
+            if (tabControl?.SelectedItem is TabItem selectedTab && selectedTab.Content is TextBox textBox)
             {
                 if (selectedTab.Tag is string filePath && !string.IsNullOrEmpty(filePath))
                 {
-                    // Если у нас уже есть путь к файлу, просто перезаписываем его
                     await File.WriteAllTextAsync(filePath, textBox.Text);
                 }
                 else
                 {
-                    // Иначе отображаем диалог сохранения файла
-                    var dialog = new SaveFileDialog();
-                    var result = await dialog.ShowAsync(this);
+                    var result = await this.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions());
                     if (result != null)
                     {
-                        await File.WriteAllTextAsync(result, textBox.Text);
-                        selectedTab.Header = Path.GetFileName(result); // Обновляем название вкладки
-                        selectedTab.Tag = result; // Сохраняем путь к файлу в Tag
+                        await File.WriteAllTextAsync(result.Path.LocalPath, textBox.Text);
+                        selectedTab.Header = Path.GetFileName(result.Path.LocalPath);
+                        selectedTab.Tag = result.Path.LocalPath;
                     }
                 }
             }
@@ -54,60 +50,41 @@ namespace TextEditorAp
 
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog
+            var result = await this.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions());
+            if (result != null && result.Count > 0)
             {
-                AllowMultiple = false
-            };
-            var result = await dialog.ShowAsync(this);
-            if (result != null && result.Length > 0)
-            {
-                var text = await File.ReadAllTextAsync(result[0]);
-                OpenNewDocument(text, result[0]);
+                var text = await File.ReadAllTextAsync(result[0].Path.LocalPath);
+                OpenNewDocument(text, result[0].Path.LocalPath);
             }
         }
 
-        private void OpenNewDocument(string text = "", string filePath = null)
+        private void OpenNewDocument(string text = "", string? filePath = null)
         {
-            var textBox = new TextBox
-            {
-                AcceptsReturn = true,
-                AcceptsTab = true,
-                Text = text
-            };
-
+            var textBox = new TextBox { AcceptsReturn = true, AcceptsTab = true, Text = text };
             var header = string.IsNullOrEmpty(filePath) ? "New Document" : Path.GetFileName(filePath);
-
-            var tabItem = new TabItem
-            {
-                Header = header,
-                Content = textBox,
-                Tag = filePath // Сохраняем путь к файлу в Tag
-            };
-
+            var tabItem = new TabItem { Header = header, Content = textBox, Tag = filePath };
             var tabControl = this.FindControl<TabControl>("DocumentsTab");
-            tabControl.Items.Add(tabItem);
-            tabControl.SelectedItem = tabItem;
+            if(tabControl != null)
+            {            
+                tabControl.Items.Add(tabItem);
+                tabControl.SelectedItem = tabItem;
+            }
         }
 
-private void CloseTab_Click(object sender, RoutedEventArgs e)
+        private void CloseTab_Click(object sender, RoutedEventArgs e)
 {
-    // sender это кнопка закрытия вкладки
-    if (sender is Button button)
+    if (sender is Button button && button.TemplatedParent is TabItem tabItem)
     {
-        // Пытаемся найти TabItem, которому принадлежит кнопка
-        var tabItem = button.GetLogicalParent() as TabItem;
-        if (tabItem != null)
+        var tabControl = this.FindControl<TabControl>("DocumentsTab");
+        if (tabControl != null)
         {
-            // Получаем доступ к TabControl
-            var tabControl = this.FindControl<TabControl>("DocumentsTab");
-            if (tabControl != null && tabControl.Items is IList items)
+            int index = tabControl.Items.IndexOf(tabItem);
+            if (index >= 0)
             {
-                items.Remove(tabItem);
+                tabControl.Items.RemoveAt(index);
             }
         }
     }
 }
-
-
     }
 }
